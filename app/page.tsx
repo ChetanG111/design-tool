@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { SidebarItem } from '@/components/SidebarItem';
 import { ViewSkeleton } from '@/components/ui/Skeleton';
+import { LogActionOverlay } from '@/components/LogActionOverlay';
 import {
     TodayView,
     PipelineView,
@@ -118,7 +119,7 @@ export default function Dashboard() {
                     />
                 </nav>
 
-                <div className="mt-auto space-y-1">
+                <div className="mt-auto">
                     <SidebarItem
                         icon={<Settings size={20} />}
                         label="Settings"
@@ -126,27 +127,6 @@ export default function Dashboard() {
                         onClick={() => handleViewChange('settings')}
                         collapsed={isSidebarCollapsed}
                     />
-
-                    <div className="pt-6 mt-6 border-t border-white/5 flex items-center gap-3 px-2 group cursor-pointer transition-all hover:opacity-80">
-                        <div className="w-9 h-9 rounded-full bg-zinc-800 border border-white/10 overflow-hidden group-hover:border-[#8561EF]/40 transition-colors flex-shrink-0">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src="https://picsum.photos/100/100?grayscale" alt="Avatar" className="w-full h-full object-cover" />
-                        </div>
-                        <AnimatePresence>
-                            {!isSidebarCollapsed && (
-                                <motion.div
-                                    initial={{ opacity: 0, x: -8 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -8 }}
-                                    transition={{ duration: 0.2, delay: 0.1 }}
-                                    className="flex flex-col whitespace-nowrap overflow-hidden"
-                                >
-                                    <span className="text-sm font-semibold leading-tight text-zinc-300">Alex Rivera</span>
-                                    <span className="text-[10px] text-zinc-600 uppercase font-bold tracking-widest">Operator Tier 1</span>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
                 </div>
             </motion.aside>
 
@@ -186,6 +166,9 @@ export default function Dashboard() {
                     )}
                 </AnimatePresence>
             </motion.main>
+
+            {/* Global Log Action Overlay */}
+            <LogActionOverlay />
         </div>
     );
 }

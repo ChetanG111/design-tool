@@ -1,4 +1,4 @@
-import { MetricData, ActivityItem, FollowUpItem, PipelineStage, PerformanceChannel, MatrixRow, ArchiveItem } from '@/types';
+import { MetricData, PerformanceChannel, ArchiveItem } from '@/types';
 
 export const COLORS = {
     bg: '#131313',
@@ -10,20 +10,26 @@ export const COLORS = {
     textSecondary: '#A1A1AA',
 };
 
-export const MOCK_METRICS: MetricData[] = [
-    { id: '1', label: 'Active Sequences', value: '42', change: '+12%', isPrimary: true },
-    { id: '2', label: 'Engagement Rate', value: '18.4%', change: '+2.1%' },
-    { id: '3', label: 'Pending Replies', value: '256', change: '+5.4%' },
-    { id: '4', label: 'Deliverability', value: '99.2%', change: '+0.1%' },
-    { id: '5', label: 'Qualified Meetings', value: '12', change: '+4%' },
-];
+// Today view metrics - values are computed from logged actions
+export const TODAY_METRIC_KEYS = ['actionsLogged', 'responsesLogged', 'activeItems', 'leadsCreated', 'revenue'] as const;
 
-export const PIPELINE_METRICS: MetricData[] = [
-    { id: 'p1', label: 'Pipeline Value', value: '$842k', change: '+14%', isPrimary: true },
-    { id: 'p2', label: 'Avg Deal Size', value: '$24.5k', change: '+2.1%' },
-    { id: 'p3', label: 'Sales Velocity', value: '18 days', change: '-2d' },
-    { id: 'p4', label: 'Conversion', value: '4.2%', change: '+0.4%' },
-];
+export const TODAY_METRIC_LABELS: Record<typeof TODAY_METRIC_KEYS[number], string> = {
+    actionsLogged: 'Actions Logged',
+    responsesLogged: 'Responses',
+    activeItems: 'Active Items',
+    leadsCreated: 'Leads Created',
+    revenue: 'Revenue',
+};
+
+// Format metric values for display
+export function formatMetricValue(key: typeof TODAY_METRIC_KEYS[number], value: number): string {
+    if (key === 'revenue') {
+        return value > 0 ? `$${value.toLocaleString()}` : '—';
+    }
+    return value.toString();
+}
+
+// Pipeline metrics are now computed from logged actions in usePipelineData hook
 
 export const CHANNELS_METRICS: MetricData[] = [
     { id: 'c1', label: 'Total Volume', value: '1.2M', change: '+8%', isPrimary: true },
@@ -32,12 +38,7 @@ export const CHANNELS_METRICS: MetricData[] = [
     { id: 'c4', label: 'Top Channel', value: 'LinkedIn', change: 'Stable' },
 ];
 
-export const MATRICES_METRICS: MetricData[] = [
-    { id: 'm1', label: 'Avg ROI', value: '8.4x', change: '+1.2x', isPrimary: true },
-    { id: 'm2', label: 'Resource Load', value: '72%', change: '+4%' },
-    { id: 'm3', label: 'Efficiency Index', value: '0.94', change: 'Stable' },
-    { id: 'm4', label: 'Waste Factor', value: '12%', change: '-2%' },
-];
+// MATRICES_METRICS removed - now computed from logged actions in useMatricesData hook
 
 export const ARCHIVE_METRICS: MetricData[] = [
     { id: 'a1', label: 'Historical Record', value: '14,842', change: '+42d', isPrimary: true },
@@ -46,56 +47,24 @@ export const ARCHIVE_METRICS: MetricData[] = [
     { id: 'a4', label: 'Data Retention', value: '100%', change: 'Nominal' },
 ];
 
-export const MOCK_ACTIVITY: ActivityItem[] = [
-    { id: 'act-1', type: 'outbound', target: 'Acme Corp', timestamp: '2m ago', status: 'active', detail: 'Step 4 / Follow-up sequence initiated' },
-    { id: 'act-2', type: 'reply', target: 'John D. (Global X)', timestamp: '14m ago', status: 'completed', detail: 'Meeting link requested via LinkedIn' },
-    { id: 'act-3', type: 'system', target: 'Infrastructure', timestamp: '1h ago', status: 'completed', detail: 'DNS warmup cycle completed for node-7' },
-    { id: 'act-4', type: 'outbound', target: 'Stellar Labs', timestamp: '2h ago', status: 'pending', detail: 'Batched upload scheduled for 5:00 PM' },
-    { id: 'act-5', type: 'reply', target: 'Sarah M. (Fintech)', timestamp: '3h ago', status: 'active', detail: 'Analyzing sentiment: positive interest' },
-    { id: 'act-6', type: 'outbound', target: 'Hyperion', timestamp: '4h ago', status: 'completed', detail: 'Initial touchpoint delivered' },
-];
+// Action type display mapping
+export const ACTION_TYPE_DISPLAY: Record<'dm' | 'post' | 'comment' | 'followup', { type: 'outbound' | 'reply' | 'system', label: string }> = {
+    dm: { type: 'outbound', label: 'Direct Message' },
+    post: { type: 'outbound', label: 'Post' },
+    comment: { type: 'reply', label: 'Comment' },
+    followup: { type: 'system', label: 'Follow-up' },
+};
 
-export const MOCK_FOLLOW_UPS: FollowUpItem[] = [
-    { id: 'fu-1', title: 'Review response for Q3 partner deal', due: '14:00', priority: 'high' },
-    { id: 'fu-2', title: 'A/B Test results review: Subject lines', due: '16:30', priority: 'medium' },
-    { id: 'fu-3', title: 'Node maintenance check: shard-B', due: '18:00', priority: 'low' },
-    { id: 'fu-4', title: 'Sync CRM data for enterprise leads', due: 'Tomorrow', priority: 'medium' },
-];
+export const CHANNEL_DISPLAY: Record<string, string> = {
+    linkedin: 'LinkedIn',
+    twitter: 'X (Twitter)',
+    email: 'Email',
+    reddit: 'Reddit',
+};
 
-export const PIPELINE_DATA: PipelineStage[] = [
-    {
-        id: 'engaged',
-        label: 'Engaged',
-        cards: [
-            { id: 'c1', title: 'Global Dynamics', subtitle: 'Enterprise License', value: '$24k', days: 2, health: 'good' },
-            { id: 'c2', title: 'Vertex Solutions', subtitle: 'Expansion Suite', value: '$12k', days: 5, health: 'neutral' },
-            { id: 'c3', title: 'Nova AI', subtitle: 'Platform Access', value: '$45k', days: 1, health: 'good' },
-        ]
-    },
-    {
-        id: 'qualified',
-        label: 'Qualified',
-        cards: [
-            { id: 'c4', title: 'Stellar Labs', subtitle: 'Custom Integration', value: '$68k', days: 12, health: 'neutral' },
-            { id: 'c5', title: 'Aura Fintech', subtitle: 'Core API', value: '$32k', days: 8, health: 'good' },
-        ]
-    },
-    {
-        id: 'discussion',
-        label: 'Closing',
-        cards: [
-            { id: 'c6', title: 'Pulse Media', subtitle: 'Managed Services', value: '$110k', days: 24, health: 'good' },
-            { id: 'c7', title: 'Blue Ocean', subtitle: 'Seat Expansion', value: '$8k', days: 4, health: 'good' },
-        ]
-    },
-    {
-        id: 'stalled',
-        label: 'Stalled',
-        cards: [
-            { id: 'c10', title: 'Legacy Partners', subtitle: 'Cloud Migration', value: '$15k', days: 89, health: 'at-risk' },
-        ]
-    }
-];
+// Follow-ups are now derived from logged actions with status 'needs-followup'
+
+// Pipeline data is now derived from logged actions in usePipelineData hook
 
 export const CHANNELS_DATA: PerformanceChannel[] = [
     {
@@ -132,19 +101,7 @@ export const CHANNELS_DATA: PerformanceChannel[] = [
     },
 ];
 
-export const MATRIX_ROI_DATA: MatrixRow[] = [
-    { id: 'mx-1', item: 'Executive Reach-out', variableA: '14.2%', variableB: '2.4', variableC: '0.82', roi: '12.4x', effort: 'Med' },
-    { id: 'mx-2', item: 'Cold Multi-touch', variableA: '8.1%', variableB: '4.1', variableC: '0.34', roi: '4.2x', effort: 'High' },
-    { id: 'mx-3', item: 'Community Inbound', variableA: '22.5%', variableB: '1.2', variableC: '0.94', roi: '18.1x', effort: 'Low' },
-    { id: 'mx-4', item: 'Event Sync (Local)', variableA: '31.2%', variableB: '0.8', variableC: '0.71', roi: '8.5x', effort: 'Med' },
-    { id: 'mx-5', item: 'Partner Referrals', variableA: '44.0%', variableB: '0.4', variableC: '0.98', roi: '22.4x', effort: 'Low' },
-];
-
-export const MATRIX_DENSITY_DATA: MatrixRow[] = [
-    { id: 'md-1', item: 'Tier 1 Accounts', variableA: '4.2k', variableB: '$120k', variableC: '0.14', roi: '14.2x', effort: 'High' },
-    { id: 'md-2', item: 'Tier 2 Accounts', variableA: '12.8k', variableB: '$45k', variableC: '0.28', roi: '9.8x', effort: 'Med' },
-    { id: 'md-3', item: 'SME Market', variableA: '45.1k', variableB: '$8k', variableC: '0.42', roi: '3.1x', effort: 'Low' },
-];
+// MATRIX_ROI_DATA and MATRIX_DENSITY_DATA removed - now computed from logged actions in useMatricesData hook
 
 export const ARCHIVE_DATA: ArchiveItem[] = [
     { id: 'ar-1', name: 'Zodiac Systems', channel: 'LinkedIn', date: 'Oct 24, 2024', outcome: 'Won', duration: '42d', summary: 'Enterprise license for 400 seats. Handed over to AM.' },

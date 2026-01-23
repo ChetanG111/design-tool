@@ -19,9 +19,9 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, active, o
         whileTap={{ scale: 0.98 }}
         transition={snappySpring}
         title={collapsed ? label : undefined}
-        className={`flex items-center gap-3 py-2.5 rounded-xl w-full transition-colors duration-200 group relative overflow-hidden
-            ${collapsed ? 'justify-center' : 'justify-start'}
-            ${active ? 'text-[#8561EF]' : 'text-zinc-500 hover:text-white hover:bg-white/5'}
+        className={`flex items-center gap-3 py-2.5 px-3 rounded-xl w-full transition-colors duration-200 group relative
+            ${collapsed ? 'justify-center px-2' : 'justify-start'}
+            ${active ? 'text-[#8561EF]' : 'text-zinc-500 hover:text-white'}
         `}
     >
         <span className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[#8561EF]' : 'group-hover:text-white/80'}`}>{icon}</span>

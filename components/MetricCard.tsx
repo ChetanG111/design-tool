@@ -36,10 +36,6 @@ export const MetricCard: React.FC<MetricCardProps> = ({ metric }) => (
                 <h3 className={`text-3xl font-bold tracking-tight ${metric.isPrimary ? 'text-white' : 'text-white'}`}>
                     {metric.value}
                 </h3>
-                <div className={`mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${metric.isPrimary ? 'bg-white/20 text-white' : 'bg-[#E3FF93]/10 text-[#E3FF93]'
-                    }`}>
-                    {metric.change}
-                </div>
             </div>
             {metric.isPrimary && (
                 <div className="p-2 bg-white/10 rounded-xl">
