@@ -54,12 +54,12 @@
 }
 
 .navLink {
-  color: var(--zinc-400);
-  font-size: 0.8rem;
-  font-weight: 500;
+  color: var(--zinc-500);
+  font-size: 0.85rem;
+  font-weight: 400;
   transition: var(--transition);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
 }
 
 .navLink:hover {
@@ -70,11 +70,9 @@
   border: 1px solid var(--zinc-800);
   padding: 8px 20px;
   border-radius: 8px;
-  font-size: 0.8rem;
-  color: var(--zinc-400);
+  font-size: 0.85rem;
+  color: var(--zinc-300);
   transition: var(--transition);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .contactBtn:hover {
@@ -113,9 +111,9 @@
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 300;
-  color: var(--zinc-400);
+  color: var(--zinc-500);
   max-width: 480px;
   margin-bottom: 48px;
   line-height: 1.6;
@@ -148,7 +146,7 @@
   border-radius: 8px;
   font-weight: 500;
   font-size: 0.95rem;
-  color: var(--foreground);
+  color: var(--zinc-300);
   transition: var(--transition);
 }
 
@@ -228,6 +226,12 @@
 .gridItem:hover {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+.previewSection {
+  width: 100%;
+  padding: 0 8vw;
+  margin-bottom: 80px;
 }
 
 .footer {

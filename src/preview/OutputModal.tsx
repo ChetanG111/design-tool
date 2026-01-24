@@ -18,7 +18,13 @@ export const OutputModal: React.FC<OutputModalProps> = ({ isOpen, onClose, htmlC
     };
 
     return (
-        <div className={styles.modalOverlay} onClick={onClose}>
+        <div 
+            className={styles.modalOverlay} 
+            onClick={onClose}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        >
             <div className={`${styles.modalContent} glass`} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalHeader}>
                     <h2 className={styles.modalTitle}>Generated HTML</h2>

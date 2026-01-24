@@ -63,7 +63,7 @@ export default function Home() {
       </section>
 
       {/* 
-      <section id="preview-section" style={{ width: '100%', padding: '0 8vw', marginBottom: '80px' }}>
+      <section id="preview-section" className={styles.previewSection}>
         <PreviewPane />
       </section> 
       */}

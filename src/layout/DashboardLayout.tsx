@@ -32,7 +32,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
                     <div className={styles.topBarActions}>
                         <div className={styles.searchWrapper}>
-                            <iconify-icon icon="solar:magnifer-linear" class={styles.searchIcon} width="16" />
+                            <iconify-icon icon="solar:magnifer-linear" className={styles.searchIcon} width="16" />
                             <input
                                 type="text"
                                 placeholder="Search workspace..."

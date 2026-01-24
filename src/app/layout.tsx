@@ -16,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" strategy="beforeInteractive" />
       </head>
       <body>
+        <Script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" strategy="beforeInteractive" />
         <DesignProvider>
           {children}
         </DesignProvider>
