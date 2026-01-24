@@ -1,5 +1,5 @@
 ---
-trigger: model_decision
+trigger: always_on
 description: This rule applies whenever the AI agent works inside this repository. It defines the project’s purpose, folder responsibilities, tech stack, workflows, coding standards, and operational constraints so the agent can act autonomously and safely.
 ---
 

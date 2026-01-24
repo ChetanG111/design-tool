@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { DesignProvider } from "@/context/DesignContext";
 import "./globals.css";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "DesignTool | The Future of Creative Automation",
@@ -13,7 +15,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        <Script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js" strategy="beforeInteractive" />
+      </head>
+      <body>
+        <DesignProvider>
+          {children}
+        </DesignProvider>
+      </body>
     </html>
   );
 }
