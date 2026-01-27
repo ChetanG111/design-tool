@@ -5,13 +5,8 @@ declare global {
         interface IntrinsicElements {
             'iconify-icon': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement> & {
                 icon?: string;
-                width?: string | number;
-                height?: string | number;
-                flip?: string;
-                rotate?: string | number;
-                mode?: string;
-                inline?: boolean;
-                'stroke-width'?: string | number;
+                class?: string;
+                className?: string; // Add className for React compatibility
             }, HTMLElement>;
         }
     }
