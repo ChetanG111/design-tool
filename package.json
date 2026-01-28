@@ -8,8 +8,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@monaco-editor/react": "^4.7.0",
     "clsx": "latest",
+    "copy-to-clipboard": "^3.3.3",
     "framer-motion": "latest",
     "lucide-react": "latest",
     "next": "latest",
