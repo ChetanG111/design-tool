@@ -1,155 +1,193 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import Editor from '@monaco-editor/react';
+import { useStore } from '@/lib/store';
+import {
+    Layout,
+    Palette,
+    Zap,
+    Code2,
+    Eye,
+    CheckCircle2,
+    Layers,
+    Sparkles,
+    RefreshCw
+} from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-const messages = [
-    {
-        id: 1,
-        role: 'user',
-        content: 'Could we try a more muted palette for the primary call-to-action buttons? The current blue feels a bit loud.',
-        time: '12:45 PM'
-    },
-    {
-        id: 2,
-        role: 'assistant',
-        content: "I've analyzed the primary CTA colors. A more muted slate or deep indigo might work better. I've updated the hero section mockup with these variations.",
-        time: '12:46 PM'
-    },
-    {
-        id: 3,
-        role: 'user',
-        content: 'The mobile navigation transition feels slightly abrupt. Can we introduce some bounce easing?',
-        time: '1:02 PM'
-    },
-    {
-        id: 4,
-        role: 'assistant',
-        content: 'Absolutely. I can adjust the Framer Motion transition to use a spring-based physics with a slight bounce (stiffness: 400, damping: 25). Would you like to preview it now?',
-        time: '1:03 PM'
-    }
-];
+function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
+export default function DesignTool() {
+    const { designConfig, setDesignConfig, generatedCode, setGeneratedCode, isGenerating, setIsGenerating } = useStore();
+    const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
 
-export default function Home() {
+    const layouts = ['hero-section', 'features', 'pricing', 'contact'];
+    const styles = ['modern', 'minimal', 'glassmorphism', 'playful'];
+
     return (
-        <div className="flex h-screen w-full bg-neutral-900 text-neutral-300 font-sans overflow-hidden">
-            {/* Chat Sidebar (30%) - AI Chat Interface */}
-            <motion.aside
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ type: "spring", damping: 15, stiffness: 100 }}
-                className="w-[30%] border-r border-neutral-800 flex flex-col bg-neutral-900/50 backdrop-blur-xl"
-            >
-                <div className="p-5 border-b border-neutral-800 flex items-center justify-center">
-                    <h2 className="text-sm font-semibold tracking-tight text-neutral-100 uppercase">Chat</h2>
+        <main className="flex h-screen bg-background text-foreground overflow-hidden">
+            {/* Left Sidebar: Controls */}
+            <aside className="w-80 border-r border-border bg-card/50 flex flex-col">
+                <div className="p-6 border-b border-border flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
+                        <Sparkles size={18} />
+                    </div>
+                    <h1 className="font-bold text-xl tracking-tight">Aura.build</h1>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-                    {messages.map((msg, i) => (
-                        <motion.div
-                            key={msg.id}
-                            initial={{ y: 10, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.05 * i, type: "spring", damping: 20 }}
-                            className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                    {/* Layout Selection */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                            <Layout size={16} />
+                            <span className="text-xs font-semibold uppercase tracking-wider">Structure</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {layouts.map((l) => (
+                                <button
+                                    key={l}
+                                    onClick={() => setDesignConfig({ layout: l })}
+                                    className={cn(
+                                        "px-3 py-2 rounded-md text-sm transition-all border text-left capitalize",
+                                        designConfig.layout === l
+                                            ? "bg-primary/10 border-primary text-primary"
+                                            : "bg-secondary/50 border-border text-muted-foreground hover:border-white/20"
+                                    )}
+                                >
+                                    {l.replace('-', ' ')}
+                                </button>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Style Selection */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                            <Palette size={16} />
+                            <span className="text-xs font-semibold uppercase tracking-wider">Aesthetics</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {styles.map((s) => (
+                                <button
+                                    key={s}
+                                    onClick={() => setDesignConfig({ style: s })}
+                                    className={cn(
+                                        "px-3 py-2 rounded-md text-sm transition-all border text-left capitalize",
+                                        designConfig.style === s
+                                            ? "bg-primary/10 border-primary text-primary"
+                                            : "bg-secondary/50 border-border text-muted-foreground hover:border-white/20"
+                                    )}
+                                >
+                                    {s}
+                                </button>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Prompt Section Placeholder */}
+                    <section className="space-y-4">
+                        <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                            <Layers size={16} />
+                            <span className="text-xs font-semibold uppercase tracking-wider">Configuration</span>
+                        </div>
+                        <div className="p-3 rounded-lg bg-secondary/30 border border-border text-[11px] font-mono text-muted-foreground leading-relaxed">
+                            {"{ \n  \"layout\": \"" + designConfig.layout + "\",\n  \"style\": \"" + designConfig.style + "\",\n  \"mode\": \"react-tailwind\"\n}"}
+                        </div>
+                    </section>
+                </div>
+
+                <div className="p-4 border-t border-border">
+                    <button
+                        disabled={isGenerating}
+                        className="w-full py-2.5 bg-primary text-primary-foreground rounded-lg font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+                    >
+                        {isGenerating ? <RefreshCw className="animate-spin" size={18} /> : <Zap size={18} fill="currentColor" />}
+                        Generate Code
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Content: Preview & Code */}
+            <section className="flex-1 flex flex-col relative">
+                <header className="h-14 border-b border-border flex items-center justify-between px-6 bg-card/30 backdrop-blur-sm">
+                    <div className="flex items-center gap-1 bg-secondary/50 p-1 rounded-lg border border-border">
+                        <button
+                            onClick={() => setActiveTab('preview')}
+                            className={cn(
+                                "px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-all",
+                                activeTab === 'preview' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                            )}
                         >
-                            <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                                ? 'bg-indigo-600 text-white rounded-tr-none'
-                                : 'bg-neutral-800 text-neutral-200 rounded-tl-none border border-neutral-700/50'
-                                }`}>
-                                {msg.content}
-                            </div>
-                            <span className="text-[10px] text-neutral-600 mt-1.5 px-1 font-medium tracking-tight">
-                                {msg.time}
-                            </span>
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="px-4 pb-4 pt-2 bg-neutral-900/80 border-t border-neutral-800">
-                    <div className="relative group flex items-center">
-                        <textarea
-                            rows={1}
-                            placeholder="Ask the AI anything..."
-                            className="w-full bg-neutral-800 border-none rounded-2xl py-4 pl-4 pr-32 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500/50 transition-all placeholder:text-neutral-600 resize-none custom-scrollbar"
-                        />
-                        <div className="absolute right-2 flex items-center gap-1">
-                            <button title="Attach" className="p-2 text-neutral-500 hover:text-neutral-300 transition-colors flex items-center justify-center">
-                                <iconify-icon icon="solar:gallery-linear" className="text-xl" />
-                            </button>
-                            <button title="Design Mode" className="p-2 text-neutral-500 hover:text-neutral-300 transition-colors flex items-center justify-center">
-                                <iconify-icon icon="solar:plain-linear" className="text-xl" />
-                            </button>
-                            <button className="p-2.5 rounded-xl bg-indigo-500 text-neutral-900 hover:bg-indigo-400 transition-all flex items-center justify-center">
-                                <iconify-icon icon="solar:arrow-up-linear" className="text-lg font-bold" />
-                            </button>
-                        </div>
+                            <Eye size={14} />
+                            Preview
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('code')}
+                            className={cn(
+                                "px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-all",
+                                activeTab === 'code' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            <Code2 size={14} />
+                            Code
+                        </button>
                     </div>
-                </div>
-            </motion.aside>
 
-            {/* Main Content Area (70%) */}
-            <main className="w-[70%] flex flex-col relative overflow-hidden bg-neutral-950">
-                <header className="h-14 border-b border-neutral-800 flex items-center justify-between px-6 backdrop-blur-sm z-10 bg-neutral-900/80">
                     <div className="flex items-center gap-4">
-                        <span className="text-xs text-neutral-500 uppercase tracking-widest">Project</span>
-                        <h1 className="text-base font-medium text-neutral-200">Refined_Interface_v2</h1>
-                        <iconify-icon icon="solar:alt-arrow-down-linear" className="text-xs text-neutral-500" />
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                        <div className="flex items-center rounded-md p-0.5 bg-neutral-800">
-                            <button className="px-3 py-1 text-xs font-medium rounded-sm shadow-sm transition-all bg-neutral-700 text-neutral-100">Design</button>
-                            <button className="px-3 py-1 text-xs font-medium transition-colors text-neutral-400 hover:text-neutral-200">Code</button>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-green-500/10 text-green-500 px-2 py-1 rounded-full border border-green-500/20">
+                            <CheckCircle2 size={12} />
+                            Live Sync
                         </div>
-                        <div className="h-4 w-px bg-neutral-800" />
-                        <button className="transition-colors flex items-center text-neutral-400 hover:text-neutral-100">
-                            <iconify-icon icon="solar:share-linear" className="text-xl" />
-                        </button>
-                        <button className="text-xs font-semibold px-4 py-1.5 rounded-md transition-all text-neutral-900 bg-indigo-500 hover:bg-indigo-600">
-                            Export
-                        </button>
                     </div>
                 </header>
 
-                <div className="flex-1 relative overflow-hidden flex items-center justify-center p-12">
-                    <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.4, type: "spring" }}
-                        className="w-full max-w-4xl aspect-[16/10] border border-neutral-800 rounded-lg shadow-2xl overflow-hidden flex flex-col bg-neutral-900"
-                    >
-                        <div className="h-12 border-b border-neutral-800 flex items-center px-8 justify-between">
-                            <div className="flex gap-2">
-                                <div className="w-2 h-2 rounded-full bg-neutral-700" />
-                                <div className="w-2 h-2 rounded-full bg-neutral-700" />
-                                <div className="w-2 h-2 rounded-full bg-neutral-700" />
-                            </div>
-                            <div className="w-32 h-2 rounded-full bg-neutral-800" />
-                            <div className="w-8 h-8 rounded-full bg-neutral-800" />
-                        </div>
-                        <div className="flex-1 p-12 space-y-8">
-                            <div className="space-y-4">
-                                <div className="w-2/3 h-10 rounded-lg bg-neutral-800/50" />
-                                <div className="w-1/2 h-4 rounded-lg bg-neutral-800/30" />
-                            </div>
-                            <div className="grid grid-cols-3 gap-6">
-                                <div className="h-40 border border-neutral-800/50 rounded-xl bg-neutral-800/20" />
-                                <div className="h-40 border border-neutral-800/50 rounded-xl bg-neutral-800/20" />
-                                <div className="h-40 border border-neutral-800/50 rounded-xl bg-neutral-800/20" />
-                            </div>
-                            <div className="space-y-4">
-                                <div className="w-full h-4 rounded-lg bg-neutral-800/30" />
-                                <div className="w-full h-4 rounded-lg bg-neutral-800/30" />
-                                <div className="w-3/4 h-4 rounded-lg bg-neutral-800/30" />
+                <div className="flex-1 overflow-hidden relative">
+                    {activeTab === 'preview' ? (
+                        <div className="absolute inset-0 p-8 flex items-center justify-center bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:24px_24px]">
+                            <div className="w-full h-full max-w-5xl glass-panel rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center">
+                                <div className="text-center space-y-4 animate-in fade-in zoom-in duration-700">
+                                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto border border-primary/20">
+                                        <Eye className="text-primary" size={24} />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <h3 className="font-semibold text-lg">Preview Canvas</h3>
+                                        <p className="text-muted-foreground text-sm max-w-xs mx-auto">
+                                            Your generated component will render here in real-time.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </motion.div>
-
-
+                    ) : (
+                        <div className="absolute inset-0">
+                            <Editor
+                                height="100%"
+                                defaultLanguage="typescript"
+                                theme="vs-dark"
+                                value={generatedCode}
+                                onChange={(value) => setGeneratedCode(value || '')}
+                                options={{
+                                    minimap: { enabled: false },
+                                    fontSize: 14,
+                                    padding: { top: 20 },
+                                    scrollBeyondLastLine: false,
+                                    fontFamily: "'JetBrains Mono', monospace",
+                                    lineNumbers: 'on',
+                                    glyphMargin: false,
+                                    folding: true,
+                                    lineDecorationsWidth: 10,
+                                    lineNumbersMinChars: 3,
+                                    background: '#00000000'
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
-            </main>
-        </div>
+            </section>
+        </main>
     );
 }

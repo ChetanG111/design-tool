@@ -8,13 +8,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "clsx": "latest",
+    "framer-motion": "latest",
+    "lucide-react": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "framer-motion": "latest",
-    "lucide-react": "latest",
-    "clsx": "latest",
-    "tailwind-merge": "latest"
+    "tailwind-merge": "latest",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "typescript": "latest",
