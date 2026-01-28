@@ -1,53 +1,83 @@
-export interface DesignConfig {
-    layout: string;
-    style: string;
-    theme: string;
-    animation: string;
-}
+import { DesignConfig } from '../store/useDesignStore'
 
-const LAYOUT_MAPPINGS: Record<string, string> = {
-    'hero-section': 'A high-impact landing page hero section with a clear H1, subtext, and primary CTA button.',
-    'features': 'A multi-column grid section showcasing key product features with icons, titles, and descriptions.',
-    'pricing': 'A clean pricing comparison table with different tiers, highlighting the most popular option.',
-    'contact': 'A professional contact form with input fields for name, email, and message, including a submit button.'
-};
+export const SYSTEM_ROLE = `You are a world-class Frontend Engineer and UI/UX Designer. 
+Your task is to generate premium, high-fidelity React components using ONLY Tailwind CSS.
+You produce clean, functional, and aesthetically pleasing code.`
 
-const STYLE_MAPPINGS: Record<string, string> = {
-    'modern': 'Use bold typography, ample whitespace, and high-contrast color pairings. Incorporate subtle shadows and rounded corners (rounded-2xl).',
-    'minimal': 'Focus on extreme simplicity. Use hairline borders (border-neutral-800), monochromatic colors, and tight typography. No shadows.',
-    'glassmorphism': 'Use semi-transparent backgrounds (bg-white/5), heavy backdrop blur (backdrop-blur-xl), and iridescent border-glows. Maintain a futuristic aesthetic.',
-    'playful': 'Use vibrant accent colors, bouncy animations, and large organic border radii (rounded-[2rem]). Typography should be friendly and rounded.'
-};
+export const OUTPUT_CONSTRAINTS = `
+- Output ONLY valid TypeScript/JSX.
+- Do NOT include markdown code blocks.
+- Use Tailwind CSS for all styling.
+- Ensure the component is responsive.
+- Do NOT use external libraries other than Lucide React for icons.
+- The component MUST be exported as 'export default function Component()'.
+- Do NOT include any explanations or commentary.
+
+- CRITICAL: Use ONLY the provided design tokens for colors, fonts, shadows, and radii. 
+- DO NOT invent new color shades (e.g., if primary is indigo-600, do not use indigo-400 unless specifically requested).
+- If a token is not provided, use standard Tailwind classes but prioritize the design system.
+`
 
 export function generateSuperPrompt(config: DesignConfig): string {
-    const layoutDesc = LAYOUT_MAPPINGS[config.layout] || 'A generic UI section.';
-    const styleDesc = STYLE_MAPPINGS[config.style] || 'Standard modern UI.';
+    const { layout, style, theme, animation, tokens } = config
 
     return `
-You are an expert Frontend Engineer and UI/UX Designer. Generate a production-ready React component using Tailwind CSS.
+--- SYSTEM INSTRUCTION ---
+${SYSTEM_ROLE}
+${OUTPUT_CONSTRAINTS}
 
-### OBJECTIVE
-Build a ${config.layout.replace('-', ' ')} with a ${config.style} aesthetic.
+--- DESIGN CONFIGURATION ---
+LAYOUT TYPE: ${layout.toUpperCase()}
+DESIGN STYLE: ${style.toUpperCase()}
+THEME: ${theme.toUpperCase()}
+ANIMATION TYPE: ${animation.toUpperCase()}
 
-### DESIGN REQUIREMENTS
-- Layout: ${layoutDesc}
-- Style: ${styleDesc}
-- Theme: ${config.theme} mode usage only.
-- Animation: ${config.animation} transitions using Framer Motion if applicable.
+--- DESIGN TOKENS (STRICT ENFORCEMENT) ---
+FONT FAMILY: ${tokens.font}
+PRIMARY COLOR: ${tokens.primaryColor}
+SECONDARY COLOR: ${tokens.secondaryColor}
+SHADOW STRENGTH: ${tokens.shadow}
+BORDER RADIUS: ${tokens.borderRadius}
 
-### TECHNICAL CONSTRAINTS
-- Use React (functional components).
-- Use Tailwind CSS for all styling (do not use arbitrary values unless necessary).
-- Use Lucide-React for icons.
-- Use Framer Motion for animations.
-- The component must be self-contained in a single default export function called 'Preview'.
-- DO NOT use any external image URLs unless they are from Unsplash (via https://images.unsplash.com/...).
-- RETURN ONLY THE CODE. NO MARKDOWN FENCES. NO EXPLANATIONS.
+--- TASK ---
+Build a premium ${layout} component in a ${style} style using a ${theme} theme.
+The primary color is ${tokens.primaryColor} and the secondary color is ${tokens.secondaryColor}.
+Use ${tokens.font} as the primary font (assume it is available).
+Apply ${tokens.shadow} shadows and ${tokens.borderRadius} border radii globally.
+Implement ${animation} entrance animations.
 
-### COMPONENT STRUCTURE
-- Container should have transition properties for smooth entry.
-- Ensure responsiveness (mobile-first).
+--- STYLE GUIDE ---
+${getStyleGuide(style, theme, tokens)}
 
-Ready? Generate the 'Preview' component now.
-`.trim();
+FINAL WORD: Your output must be a single file containing a complete, self-contained React component. No extra text.
+`
+}
+
+function getStyleGuide(style: string, theme: string, tokens: any): string {
+    const isDark = theme === 'dark'
+    const bgColor = isDark ? 'bg-slate-950' : 'bg-white'
+    const textColor = isDark ? 'text-white' : 'text-slate-900'
+
+    let guide = `- Base Background: ${bgColor}
+- Base Text: ${textColor}
+- Accent: ${tokens.primaryColor}
+`
+
+    if (style === 'glass') {
+        guide += `- Use backdrop-blur-md, saturate-150, and border-white/10 (or border-black/10 for light mode).
+- Apply subtle gradients for depth.
+- High transparency on surface backgrounds.`
+    } else if (style === 'minimal') {
+        guide += `- Extreme whitespace.
+- Thin borders (1px).
+- Zero gradients.
+- Typography-centered design.`
+    } else if (style === 'brutal') {
+        guide += `- Bold black borders (2px+).
+- High contrast.
+- Harsh shadows (no blur).
+- Unusual positioning.`
+    }
+
+    return guide
 }
