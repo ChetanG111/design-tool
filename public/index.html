@@ -44,7 +44,7 @@
                                 </svg></div>
                             <span>Hero</span>
                         </div>
-                        <div class="builder-card" data-value="features">
+                        <!-- <div class="builder-card" data-value="features">
                             <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
                                     <rect x="3" y="6" width="5" height="12" rx="1" />
                                     <rect x="9.5" y="6" width="5" height="12" rx="1" />
@@ -84,7 +84,7 @@
                                     <rect x="13" y="13" width="7" height="5" rx="1" />
                                 </svg></div>
                             <span>Portfolio</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -92,7 +92,29 @@
                 <div class="builder-category" id="cat-layout-config">
                     <label>Layout Configuration</label>
                     <div class="card-grid" data-category="layout-config">
-                        <div class="builder-card active" data-value="card">
+                        <div class="builder-card active" data-value="left-text">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="5" width="5" height="14" rx="1" />
+                                    <rect x="11" y="5" width="9" height="14" rx="1" opacity="0.3" />
+                                </svg></div>
+                            <span>Left Text, Right Image</span>
+                        </div>
+                        <div class="builder-card" data-value="right-text">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="5" width="9" height="14" rx="1" opacity="0.3" />
+                                    <rect x="15" y="5" width="5" height="14" rx="1" />
+                                </svg></div>
+                            <span>Right Text, Left Image</span>
+                        </div>
+                        <div class="builder-card" data-value="center">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="6" y="6" width="12" height="12" rx="2"
+                                        style="fill:currentColor; opacity:0.1;" />
+                                    <rect x="9" y="10" width="6" height="4" rx="0.5" style="fill:currentColor;" />
+                                </svg></div>
+                            <span>Center Text & CTA</span>
+                        </div>
+                        <!-- <div class="builder-card" data-value="card">
                             <div class="card-icon">
                                 <rect x="7" y="7" width="10" height="10" rx="2" style="fill:currentColor;" />
                             </div>
@@ -125,26 +147,12 @@
                                     <line x1="14.6" y1="4" x2="14.6" y2="20" stroke="currentColor" stroke-width="2" />
                                 </svg></div>
                             <span>Table</span>
-                        </div>
-                        <div class="builder-card" data-value="sidebar-left">
-                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
-                                    <rect x="4" y="5" width="5" height="14" rx="1" />
-                                    <rect x="11" y="5" width="9" height="14" rx="1" opacity="0.3" />
-                                </svg></div>
-                            <span>Sidebar Left</span>
-                        </div>
-                        <div class="builder-card" data-value="sidebar-right">
-                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
-                                    <rect x="4" y="5" width="9" height="14" rx="1" opacity="0.3" />
-                                    <rect x="15" y="5" width="5" height="14" rx="1" />
-                                </svg></div>
-                            <span>Sidebar Right</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
                 <!-- Framing -->
-                <div class="builder-category" id="cat-framing">
+                <!-- <div class="builder-category" id="cat-framing">
                     <label>Framing</label>
                     <div class="card-grid" data-category="framing">
                         <div class="builder-card active" data-value="full-screen">
@@ -192,10 +200,10 @@
                             <span>Clay Web</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Style (Collapsible) -->
-                <div class="builder-category collapsible" id="cat-style">
+                <!-- <div class="builder-category collapsible" id="cat-style">
                     <div class="category-header trigger">
                         <label>Style</label>
                         <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -227,6 +235,141 @@
                         <div class="builder-card" data-value="material">
                             <div class="card-icon-styled material"></div>
                             <span>Material</span>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Appearance -->
+                <div class="builder-category" id="cat-appearance">
+                    <label>Appearance</label>
+                    <div class="sub-label">Style</div>
+                    <div class="card-grid" data-category="style">
+                        <div class="builder-card active" data-value="flat">
+                            <div class="card-icon-styled flat"></div>
+                            <span>Flat</span>
+                        </div>
+                        <div class="builder-card" data-value="glass">
+                            <div class="card-icon-styled glass"></div>
+                            <span>Glass</span>
+                        </div>
+                        <div class="builder-card" data-value="ios">
+                            <div class="card-icon-styled ios"></div>
+                            <span>iOS</span>
+                        </div>
+                        <div class="builder-card" data-value="minimalist">
+                            <div class="card-icon-styled minimalist"></div>
+                            <span>Minimalist</span>
+                        </div>
+                    </div>
+
+                    <div class="sub-label">Accent Color</div>
+                    <div class="card-grid" data-category="accent-color">
+                        <div class="builder-card active color-card" data-value="brand">
+                            <div class="color-swatch" style="background:#356ecd;"></div>
+                        </div>
+                        <div class="builder-card color-card" data-value="rose">
+                            <div class="color-swatch" style="background:#f43f5e;"></div>
+                        </div>
+                        <div class="builder-card color-card" data-value="amber">
+                            <div class="color-swatch" style="background:#f59e0b;"></div>
+                        </div>
+                        <div class="builder-card color-card" data-value="emerald">
+                            <div class="color-swatch" style="background:#10b981;"></div>
+                        </div>
+                        <div class="builder-card color-card" data-value="sky">
+                            <div class="color-swatch" style="background:#0ea5e9;"></div>
+                        </div>
+                        <div class="builder-card color-card" data-value="slate">
+                            <div class="color-swatch" style="background:#475569;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animations -->
+                <div class="builder-category collapsible" id="cat-animations">
+                    <div class="category-header trigger">
+                        <label>Animations</label>
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </div>
+                    <div class="sub-label">Element Type</div>
+                    <div class="card-grid" data-category="anim-type">
+                        <div class="builder-card active" data-value="fade">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="8" stroke-dasharray="4 4" />
+                                    <circle cx="12" cy="12" r="4" fill="currentColor" opacity="0.5" />
+                                </svg>
+                            </div>
+                            <span>Fade</span>
+                        </div>
+                        <div class="builder-card" data-value="slide">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 12h16M16 8l4 4-4 4" />
+                                    <rect x="2" y="10" width="4" height="4" rx="1" fill="currentColor" />
+                                </svg>
+                            </div>
+                            <span>Slide</span>
+                        </div>
+                        <div class="builder-card" data-value="bounce">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 4v12M8 12l4 4 4-4" />
+                                    <ellipse cx="12" cy="18" rx="6" ry="2" opacity="0.3" fill="currentColor" />
+                                </svg>
+                            </div>
+                            <span>Bounce</span>
+                        </div>
+                        <div class="builder-card" data-value="3d">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 2L4 7v10l8 5 8-5V7l-8-5zM12 22V12M20 7l-8 5M4 7l8 5" />
+                                </svg>
+                            </div>
+                            <span>3D</span>
+                        </div>
+                    </div>
+
+                    <div class="sub-label">Scene Style</div>
+                    <div class="card-grid" data-category="anim-scene">
+                        <div class="builder-card active" data-value="staggered">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="4" y="6" width="6" height="4" rx="1" opacity="0.4" />
+                                    <rect x="8" y="11" width="6" height="4" rx="1" opacity="0.7" />
+                                    <rect x="12" y="16" width="6" height="4" rx="1" fill="currentColor" />
+                                </svg>
+                            </div>
+                            <span>Staggered</span>
+                        </div>
+                        <div class="builder-card" data-value="word-by-word">
+                            <div class="card-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 14l3-6 3 6M5 12h4M13 8v8h3a3 3 0 000-6h-3M13 14h2" />
+                                    <line x1="10" y1="18" x2="20" y2="18" stroke-dasharray="2 2" />
+                                </svg>
+                            </div>
+                            <span>Word-by-word</span>
+                        </div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-container">
+                            <div class="slider-header">
+                                <span>Duration</span>
+                                <span id="val-anim-duration">0.5s</span>
+                            </div>
+                            <input type="range" id="builder-anim-duration" min="0.1" max="2" step="0.1" value="0.5">
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-header">
+                                <span>Delay</span>
+                                <span id="val-anim-delay">0s</span>
+                            </div>
+                            <input type="range" id="builder-anim-delay" min="0" max="1" step="0.1" value="0">
                         </div>
                     </div>
                 </div>

@@ -30,13 +30,17 @@ const modalBackdrop = document.getElementById('modal-backdrop')!;
 const closeBuilderBtn = document.getElementById('close-builder-btn')!;
 
 // Builder selections
-let builderSelections: Record<string, string> = {
+let builderSelections: Record<string, any> = {
     'layout-type': 'hero',
-    'layout-config': 'card',
-    'framing': 'full-screen',
+    'layout-config': 'left-text',
+    'platform': 'web',
     'style': 'flat',
-    'theme': 'dark',
-    'platform': 'web'
+    'accent-color': 'brand',
+    'anim-type': 'fade',
+    'anim-scene': 'staggered',
+    'anim-duration': 0.5,
+    'anim-delay': 0,
+    'theme': 'dark'
 };
 
 // Initialize
@@ -166,6 +170,24 @@ function setupEventListeners() {
         trigger.addEventListener('click', () => {
             trigger.parentElement?.classList.toggle('collapsed');
         });
+    });
+
+    // Slider Listeners
+    const durationSlider = document.getElementById('builder-anim-duration') as HTMLInputElement;
+    const delaySlider = document.getElementById('builder-anim-delay') as HTMLInputElement;
+    const durationVal = document.getElementById('val-anim-duration')!;
+    const delayVal = document.getElementById('val-anim-delay')!;
+
+    durationSlider?.addEventListener('input', () => {
+        const val = durationSlider.value;
+        durationVal.textContent = `${val}s`;
+        builderSelections['anim-duration'] = parseFloat(val);
+    });
+
+    delaySlider?.addEventListener('input', () => {
+        const val = delaySlider.value;
+        delayVal.textContent = `${val}s`;
+        builderSelections['anim-delay'] = parseFloat(val);
     });
 
     // Back Button
@@ -328,9 +350,14 @@ function constructBuilderContext() {
     if (builderSelections['layout-type']) context += `Page Type: {${builderSelections['layout-type']}}. `;
     if (builderSelections['platform']) context += `Target Device: ${builderSelections['platform']}. `;
     if (builderSelections['layout-config']) context += `Layout Config: ${builderSelections['layout-config']}. `;
-    if (builderSelections['framing']) context += `Framing: ${builderSelections['framing']}. `;
     if (builderSelections['style']) context += `Design Style: ${builderSelections['style']}. `;
+    if (builderSelections['accent-color']) context += `Accent Color: ${builderSelections['accent-color']}. `;
     if (builderSelections['theme']) context += `Theme: ${builderSelections['theme']} mode. `;
+    if (builderSelections['anim-type']) {
+        context += `Element Animation: ${builderSelections['anim-type']} style. `;
+        context += `Scene Animation: ${builderSelections['anim-scene'] || 'staggered'} mode. `;
+        context += `Animation Timing: ${builderSelections['anim-duration']}s duration, ${builderSelections['anim-delay']}s delay. `;
+    }
     return context.trim();
 }
 
