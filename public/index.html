@@ -17,96 +17,243 @@
     <div id="app" class="entry-mode">
         <div id="modal-backdrop" class="hidden"></div>
         <div id="prompt-builder-panel" class="hidden">
-            <h3>Prompt Builder</h3>
-            <div class="builder-sections">
-                <div class="builder-section">
-                    <label>Layout Type</label>
-                    <select id="builder-layout-type">
-                        <option value="landing-page">Landing Page</option>
-                    </select>
-                </div>
-                <div class="builder-section">
-                    <label>Layout Config</label>
-                    <select id="builder-layout">
-                        <option value="">Select Layout</option>
-                        <option value="left-text">Left Text, Right Image</option>
-                        <option value="right-text">Right Text, Left Image</option>
-                        <option value="center">Center Text & CTA</option>
-                    </select>
-                </div>
-                <div class="builder-section">
-                    <label>Navbar</label>
-                    <select id="builder-navbar">
-                        <option value="top">Top Navbar</option>
-                        <option value="floating">Bottom Floating</option>
-                    </select>
-                </div>
-                <div class="builder-section">
-                    <label>Font Style</label>
-                    <select id="builder-font">
-                        <option value="modern-sans">Modern Sans</option>
-                        <option value="elegant-serif">Elegant Serif</option>
-                        <option value="minimalist">Minimalist</option>
-                    </select>
-                </div>
-                <div class="builder-section">
-                    <label>Animation Type</label>
-                    <select id="builder-anim-type">
-                        <option value="fade">Fade In</option>
-                        <option value="slide">Slide Up</option>
-                        <option value="reveal">Reveal</option>
-                    </select>
-                </div>
-                <div class="builder-section full-width">
-                    <label>Animation Duration & Delay (Premium)</label>
-                    <div class="slider-group">
-                        <input type="range" id="builder-anim-duration" min="0.3" max="1.5" step="0.1" value="0.6">
-                        <input type="range" id="builder-anim-delay" min="0" max="1" step="0.1" value="0.2">
+            <div class="builder-header">
+                <h3>Prompt Builder</h3>
+                <button id="close-builder-btn" class="icon-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="builder-content">
+                <!-- Layout Type -->
+                <div class="builder-category" id="cat-layout-type">
+                    <div class="category-header">
+                        <label>Layout Type</label>
+                        <div class="toggle-group" id="platform-toggle">
+                            <button class="toggle-btn active" data-value="web">Web</button>
+                            <button class="toggle-btn" data-value="mobile">Mobile</button>
+                        </div>
+                    </div>
+                    <div class="card-grid" data-category="layout-type">
+                        <div class="builder-card active" data-value="hero">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="3" y="6" width="18" height="3" rx="1" />
+                                    <rect x="3" y="11" width="18" height="7" rx="1" />
+                                </svg></div>
+                            <span>Hero</span>
+                        </div>
+                        <div class="builder-card" data-value="features">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="3" y="6" width="5" height="12" rx="1" />
+                                    <rect x="9.5" y="6" width="5" height="12" rx="1" />
+                                    <rect x="16" y="6" width="5" height="12" rx="1" />
+                                </svg></div>
+                            <span>Features</span>
+                        </div>
+                        <div class="builder-card" data-value="onboarding">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="12" r="2" />
+                                    <circle cx="6" cy="12" r="1" opacity="0.5" />
+                                    <circle cx="18" cy="12" r="1" opacity="0.5" />
+                                </svg></div>
+                            <span>Onboarding</span>
+                        </div>
+                        <div class="builder-card" data-value="docs">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="4" width="7" height="7" rx="1" />
+                                    <rect x="13" y="4" width="7" height="16" rx="1" />
+                                    <rect x="4" y="13" width="7" height="7" rx="1" />
+                                </svg></div>
+                            <span>Docs</span>
+                        </div>
+                        <div class="builder-card" data-value="updates">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="3" y="6" width="18" height="2" rx="1" />
+                                    <rect x="3" y="10" width="18" height="2" rx="1" />
+                                    <rect x="3" y="14" width="18" height="2" rx="1" />
+                                </svg></div>
+                            <span>Updates</span>
+                        </div>
+                        <div class="builder-card" data-value="portfolio">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="6" width="7" height="5" rx="1" />
+                                    <rect x="13" y="6" width="7" height="5" rx="1" />
+                                    <rect x="4" y="13" width="7" height="5" rx="1" />
+                                    <rect x="13" y="13" width="7" height="5" rx="1" />
+                                </svg></div>
+                            <span>Portfolio</span>
+                        </div>
                     </div>
                 </div>
-                <div class="builder-section">
-                    <label>Animation Scene</label>
-                    <select id="builder-anim-scene">
-                        <option value="all-at-once">All at once</option>
-                        <option value="staggered">Staggered</option>
-                        <option value="word-by-word">Word by Word</option>
-                    </select>
+
+                <!-- Layout Configuration -->
+                <div class="builder-category" id="cat-layout-config">
+                    <label>Layout Configuration</label>
+                    <div class="card-grid" data-category="layout-config">
+                        <div class="builder-card active" data-value="card">
+                            <div class="card-icon">
+                                <rect x="7" y="7" width="10" height="10" rx="2" style="fill:currentColor;" />
+                            </div>
+                            <span>Card</span>
+                        </div>
+                        <div class="builder-card" data-value="list">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="5" y="6" width="14" height="2" rx="0.5" />
+                                    <rect x="5" y="11" width="14" height="2" rx="0.5" />
+                                    <rect x="5" y="16" width="14" height="2" rx="0.5" />
+                                </svg></div>
+                            <span>List</span>
+                        </div>
+                        <div class="builder-card" data-value="2-2-square">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="5" y="5" width="6" height="6" rx="1" />
+                                    <rect x="13" y="5" width="6" height="6" rx="1" />
+                                    <rect x="5" y="13" width="6" height="6" rx="1" />
+                                    <rect x="13" y="13" width="6" height="6" rx="1" />
+                                </svg></div>
+                            <span>2-2 Square</span>
+                        </div>
+                        <div class="builder-card" data-value="table">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="4" width="16" height="16" rx="1" fill="none" stroke="currentColor"
+                                        stroke-width="2" />
+                                    <line x1="4" y1="9.3" x2="20" y2="9.3" stroke="currentColor" stroke-width="2" />
+                                    <line x1="4" y1="14.6" x2="20" y2="14.6" stroke="currentColor" stroke-width="2" />
+                                    <line x1="9.3" y1="4" x2="9.3" y2="20" stroke="currentColor" stroke-width="2" />
+                                    <line x1="14.6" y1="4" x2="14.6" y2="20" stroke="currentColor" stroke-width="2" />
+                                </svg></div>
+                            <span>Table</span>
+                        </div>
+                        <div class="builder-card" data-value="sidebar-left">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="5" width="5" height="14" rx="1" />
+                                    <rect x="11" y="5" width="9" height="14" rx="1" opacity="0.3" />
+                                </svg></div>
+                            <span>Sidebar Left</span>
+                        </div>
+                        <div class="builder-card" data-value="sidebar-right">
+                            <div class="card-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="4" y="5" width="9" height="14" rx="1" opacity="0.3" />
+                                    <rect x="15" y="5" width="5" height="14" rx="1" />
+                                </svg></div>
+                            <span>Sidebar Right</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="builder-section">
-                    <label>Animation Direction</label>
-                    <select id="builder-anim-direction">
-                        <option value="up">Up</option>
-                        <option value="down">Down</option>
-                        <option value="left">Left</option>
-                        <option value="right">Right</option>
-                    </select>
+
+                <!-- Framing -->
+                <div class="builder-category" id="cat-framing">
+                    <label>Framing</label>
+                    <div class="card-grid" data-category="framing">
+                        <div class="builder-card active" data-value="full-screen">
+                            <div class="card-icon">
+                                <rect x="4" y="6" width="16" height="12" rx="1" style="fill:currentColor;" />
+                            </div>
+                            <span>Full Screen</span>
+                        </div>
+                        <div class="builder-card" data-value="card">
+                            <div class="card-icon">
+                                <rect x="7" y="8" width="10" height="8" rx="1"
+                                    style="fill:none; stroke:currentColor; stroke-width:2;" />
+                                <rect x="8" y="9" width="8" height="6" rx="0.5"
+                                    style="fill:currentColor; opacity:0.3;" />
+                            </div>
+                            <span>Card</span>
+                        </div>
+                        <div class="builder-card" data-value="browser">
+                            <div class="card-icon">
+                                <rect x="4" y="6" width="16" height="12" rx="1"
+                                    style="fill:none; stroke:currentColor; stroke-width:2;" />
+                                <rect x="4" y="6" width="16" height="3" style="fill:currentColor; opacity:0.3;" />
+                                <circle cx="6" cy="7.5" r="0.5" fill="white" />
+                                <circle cx="8" cy="7.5" r="0.5" fill="white" />
+                            </div>
+                            <span>Browser</span>
+                        </div>
+                        <div class="builder-card" data-value="mac-app">
+                            <div class="card-icon">
+                                <rect x="4" y="5" width="16" height="12" rx="1"
+                                    style="fill:none; stroke:currentColor; stroke-width:2;" />
+                                <rect x="4" y="5" width="16" height="2" style="fill:currentColor;" />
+                                <circle cx="6" cy="6" r="0.4" fill="red" />
+                                <circle cx="7.5" cy="6" r="0.4" fill="yellow" />
+                                <circle cx="9" cy="6" r="0.4" fill="green" />
+                            </div>
+                            <span>Mac App</span>
+                        </div>
+                        <div class="builder-card" data-value="clay-web">
+                            <div class="card-icon">
+                                <rect x="6" y="7" width="12" height="10" rx="3"
+                                    style="fill:currentColor; opacity:0.2;" />
+                                <rect x="8" y="9" width="8" height="6" rx="1" style="fill:currentColor;" />
+                            </div>
+                            <span>Clay Web</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="builder-section">
-                    <label>Animation Timing</label>
-                    <select id="builder-anim-timing">
-                        <option value="ease-out">Ease Out</option>
-                        <option value="spring">Spring</option>
-                        <option value="bounce">Bounce</option>
-                    </select>
+
+                <!-- Style (Collapsible) -->
+                <div class="builder-category collapsible" id="cat-style">
+                    <div class="category-header trigger">
+                        <label>Style</label>
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
+                    </div>
+                    <div class="card-grid" data-category="style">
+                        <div class="builder-card active" data-value="flat">
+                            <div class="card-icon-styled flat"></div>
+                            <span>Flat</span>
+                        </div>
+                        <div class="builder-card" data-value="outline">
+                            <div class="card-icon-styled outline"></div>
+                            <span>Outline</span>
+                        </div>
+                        <div class="builder-card" data-value="minimalist">
+                            <div class="card-icon-styled minimalist"></div>
+                            <span>Minimalist</span>
+                        </div>
+                        <div class="builder-card" data-value="glass">
+                            <div class="card-icon-styled glass"></div>
+                            <span>Glass</span>
+                        </div>
+                        <div class="builder-card" data-value="ios">
+                            <div class="card-icon-styled ios"></div>
+                            <span>iOS</span>
+                        </div>
+                        <div class="builder-card" data-value="material">
+                            <div class="card-icon-styled material"></div>
+                            <span>Material</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="builder-section">
-                    <label>Color Mode</label>
-                    <select id="builder-color-mode">
-                        <option value="dark">Dark Mode</option>
-                        <option value="light">Light Mode</option>
-                    </select>
-                </div>
-                <div class="builder-section">
-                    <label>Accent Color</label>
-                    <select id="builder-accent-color">
-                        <option value="indigo">Indigo</option>
-                        <option value="emerald">Emerald</option>
-                        <option value="rose">Rose</option>
-                        <option value="amber">Amber</option>
-                        <option value="sky">Sky</option>
-                    </select>
+
+                <!-- Theme -->
+                <div class="builder-category" id="cat-theme">
+                    <label>Theme</label>
+                    <div class="card-grid" data-category="theme">
+                        <div class="builder-card" data-value="light">
+                            <div class="card-icon theme-light">
+                                <rect x="2" y="8" width="20" height="8" rx="2" fill="white" />
+                                <line x1="2" y1="12" x2="22" y2="12" stroke="rgba(0,0,0,0.1)" stroke-width="1" />
+                            </div>
+                            <span>Light Mode</span>
+                        </div>
+                        <div class="builder-card active" data-value="dark">
+                            <div class="card-icon theme-dark">
+                                <rect x="2" y="8" width="20" height="8" rx="2" fill="#222" />
+                                <path d="M12 10a2 2 0 1 0 0 4 2 2 0 0 1 0-4z" fill="white" opacity="0.8" />
+                                <line x1="2" y1="12" x2="22" y2="12" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                            </div>
+                            <span>Dark Mode</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+
             <div class="builder-footer">
                 <button id="add-to-prompt-btn" class="secondary-btn">Add to Prompt</button>
             </div>

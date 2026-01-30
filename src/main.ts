@@ -27,20 +27,17 @@ const previewFrame = document.getElementById('preview-frame') as HTMLIFrameEleme
 const codeView = document.getElementById('code-view')!;
 const codeContent = document.getElementById('code-content')!;
 const modalBackdrop = document.getElementById('modal-backdrop')!;
+const closeBuilderBtn = document.getElementById('close-builder-btn')!;
 
-// Builder Inputs
-const builderLayoutType = document.getElementById('builder-layout-type') as HTMLSelectElement;
-const builderLayout = document.getElementById('builder-layout') as HTMLSelectElement;
-const builderNavbar = document.getElementById('builder-navbar') as HTMLSelectElement;
-const builderFont = document.getElementById('builder-font') as HTMLSelectElement;
-const builderAnimType = document.getElementById('builder-anim-type') as HTMLSelectElement;
-const builderAnimDuration = document.getElementById('builder-anim-duration') as HTMLInputElement;
-const builderAnimDelay = document.getElementById('builder-anim-delay') as HTMLInputElement;
-const builderAnimScene = document.getElementById('builder-anim-scene') as HTMLSelectElement;
-const builderAnimDirection = document.getElementById('builder-anim-direction') as HTMLSelectElement;
-const builderAnimTiming = document.getElementById('builder-anim-timing') as HTMLSelectElement;
-const builderColorMode = document.getElementById('builder-color-mode') as HTMLSelectElement;
-const builderAccentColor = document.getElementById('builder-accent-color') as HTMLSelectElement;
+// Builder selections
+let builderSelections: Record<string, string> = {
+    'layout-type': 'hero',
+    'layout-config': 'card',
+    'framing': 'full-screen',
+    'style': 'flat',
+    'theme': 'dark',
+    'platform': 'web'
+};
 
 // Initialize
 function init() {
@@ -51,7 +48,6 @@ function init() {
 function initCustomSelects() {
     const selects = document.querySelectorAll('select');
     selects.forEach(select => {
-        if (select.closest('.dropdown-content')) return; // Skip top bar tool selects if any
         if (select.dataset.enhanced) return;
         select.dataset.enhanced = "true";
 
@@ -136,6 +132,42 @@ function setupEventListeners() {
         modalBackdrop.classList.add('hidden');
     });
 
+    closeBuilderBtn.addEventListener('click', () => {
+        promptBuilderPanel.classList.add('hidden');
+        modalBackdrop.classList.add('hidden');
+    });
+
+    // Builder Card Clicks
+    document.querySelectorAll('.builder-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = (card.parentElement as HTMLElement).dataset.category;
+            if (!category) return;
+
+            // Update selection
+            builderSelections[category] = (card as HTMLElement).dataset.value!;
+
+            // Update UI
+            card.parentElement?.querySelectorAll('.builder-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+
+    // Platform Toggle
+    document.querySelectorAll('#platform-toggle .toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('#platform-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            builderSelections['platform'] = (btn as HTMLElement).dataset.value!;
+        });
+    });
+
+    // Collapsible sections
+    document.querySelectorAll('.builder-category.collapsible .trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            trigger.parentElement?.classList.toggle('collapsed');
+        });
+    });
+
     // Back Button
     document.getElementById('back-btn')?.addEventListener('click', () => {
         app.classList.remove('split-mode');
@@ -203,49 +235,6 @@ function setupEventListeners() {
         });
     });
 
-    // Chat Mode Toggle (Design vs Edit) via dropdown
-    const inlineModeSelect = document.getElementById('inline-mode-select') as HTMLSelectElement;
-    inlineModeSelect?.addEventListener('change', (e) => {
-        const target = e.target as HTMLSelectElement;
-        currentMode = target.value;
-
-        if (currentMode === 'edit') {
-            promptInput.placeholder = "Tell me what to edit...";
-        } else {
-            promptInput.placeholder = "Describe a new design...";
-        }
-    });
-
-    // Top Bar Injections
-    document.querySelectorAll('[data-font]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const font = (e.target as HTMLButtonElement).dataset.font;
-            injectStyle(`body { font-family: '${font}', sans-serif !important; }`);
-        });
-    });
-
-    document.querySelectorAll('[data-theme]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const theme = (e.target as HTMLButtonElement).dataset.theme;
-            const color = theme === 'dark' ? '#0a0a0a' : '#ffffff';
-            const textColor = theme === 'dark' ? '#ffffff' : '#0a0a0a';
-            injectStyle(`body { background-color: ${color} !important; color: ${textColor} !important; }`);
-        });
-    });
-
-    document.querySelectorAll('[data-anim]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const anim = (e.target as HTMLButtonElement).dataset.anim;
-            if (anim === 'fade') {
-                injectStyle(`@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } 
-                            section, div, h1, h2, p { animation: fadeIn 1s ease-out forwards; }`);
-            } else if (anim === 'slide') {
-                injectStyle(`@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                            section, div, h1, h2, p { animation: slideUp 0.8s ease-out forwards; }`);
-            }
-        });
-    });
-
     // Handle messages from iframe (Design Mode selection)
     window.addEventListener('message', (event) => {
         if (event.data.type === 'element-selected') {
@@ -276,20 +265,21 @@ function switchToEditMode() {
 
 async function handleSend() {
     const prompt = promptInput.value.trim();
-    if (!prompt && !builderLayout.value) return;
+    if (!prompt && !builderSelections['layout-type']) return;
 
     const fullPrompt = constructPrompt(prompt);
-    const model = (document.getElementById('inline-model-select') as HTMLSelectElement).value;
+    const modelInput = document.getElementById('inline-model-select') as HTMLSelectElement;
+    const model = modelInput ? modelInput.value : 'gemini-2.0-flash';
 
     if (isFirstPrompt) {
         switchToSplitMode();
         isFirstPrompt = false;
     }
 
-    addMessage('user', prompt || "Designing based on template selections...");
+    addMessage('user', prompt || 'Generating design...');
     promptInput.value = '';
 
-    const loadingId = addMessage('assistant', 'Processing request...');
+    const assistantMsgId = addMessage('assistant', 'Designing your landing page...');
 
     try {
         const designSystemInstructions = `
@@ -303,10 +293,10 @@ STRICT RULES:
 7. INTERACTION: Add subtle Tailwind hover transitions to buttons and links while keeping the texts visible
 `;
 
-        const layoutType = builderLayoutType.value || 'landing-page';
+        const layoutType = builderSelections['layout-type'] || 'landing-page';
         const systemPrompt = currentMode === 'edit'
             ? `You are an expert editor. Modify the existing code according to user instructions.${designSystemInstructions} Return ONLY the complete updated HTML document. Existing Code: \n${currentCode}`
-            : `You are an expert web designer. ${designSystemInstructions} Page Type: {${layoutType}}. Layout Config: ${builderLayout.value || 'modern'}. Navbar: ${builderNavbar.value || 'top'}. Create a stunning, high-converting ${layoutType.replace('-', ' ')}. Return ONLY valid HTML.`;
+            : `You are an expert web designer. ${designSystemInstructions} Page Type: {${layoutType}}. Layout Config: ${builderSelections['layout-config'] || 'card'}. Framing: ${builderSelections['framing'] || 'full-screen'}. Style: ${builderSelections['style'] || 'flat'}. Theme: ${builderSelections['theme'] || 'dark'}. Create a stunning, high-converting ${layoutType.replace('-', ' ')} for ${builderSelections['platform'] || 'web'}. Return ONLY valid HTML.`;
 
         const response = await fetch('/api/generate', {
             method: 'POST',
@@ -324,37 +314,23 @@ STRICT RULES:
 
         currentCode = code;
         updatePreview(code);
-        removeMessage(loadingId);
+        removeMessage(assistantMsgId);
         addMessage('assistant', currentMode === 'edit' ? 'Edits applied!' : 'Design generated!');
     } catch (error) {
         console.error(error);
-        removeMessage(loadingId);
+        removeMessage(assistantMsgId);
         addMessage('assistant', 'Error: Failed to reach the AI model.');
     }
 }
 
 function constructBuilderContext() {
-    const layoutType = builderLayoutType.value;
-    const layout = builderLayout.value;
-    const navbar = builderNavbar.value;
-    const font = builderFont.value;
-    const animType = builderAnimType.value;
-    const duration = builderAnimDuration.value;
-    const delay = builderAnimDelay.value;
-    const scene = builderAnimScene.value;
-    const direction = builderAnimDirection.value;
-    const timing = builderAnimTiming.value;
-    const colorMode = builderColorMode.value;
-    const accentColor = builderAccentColor.value;
-
     let context = '';
-    if (layoutType) context += `Page Type: {${layoutType}}. `;
-    if (layout) context += `Layout Config: ${layout}. `;
-    if (navbar) context += `Navbar: ${navbar}. `;
-    if (font) context += `Primary Font Style: ${font}. `;
-    if (colorMode) context += `Color Mode: ${colorMode}. `;
-    if (accentColor) context += `Accent Color: ${accentColor}. `;
-    if (animType) context += `Animations: ${animType} type, ${duration}s duration, ${delay}s delay, Scene: ${scene}, Direction: ${direction}, Timing: ${timing}. `;
+    if (builderSelections['layout-type']) context += `Page Type: {${builderSelections['layout-type']}}. `;
+    if (builderSelections['platform']) context += `Target Device: ${builderSelections['platform']}. `;
+    if (builderSelections['layout-config']) context += `Layout Config: ${builderSelections['layout-config']}. `;
+    if (builderSelections['framing']) context += `Framing: ${builderSelections['framing']}. `;
+    if (builderSelections['style']) context += `Design Style: ${builderSelections['style']}. `;
+    if (builderSelections['theme']) context += `Theme: ${builderSelections['theme']} mode. `;
     return context.trim();
 }
 
