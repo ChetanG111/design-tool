@@ -26,8 +26,10 @@ const promptBuilderPanel = document.getElementById('prompt-builder-panel')!;
 const previewFrame = document.getElementById('preview-frame') as HTMLIFrameElement;
 const codeView = document.getElementById('code-view')!;
 const codeContent = document.getElementById('code-content')!;
+const modalBackdrop = document.getElementById('modal-backdrop')!;
 
 // Builder Inputs
+const builderLayoutType = document.getElementById('builder-layout-type') as HTMLSelectElement;
 const builderLayout = document.getElementById('builder-layout') as HTMLSelectElement;
 const builderNavbar = document.getElementById('builder-navbar') as HTMLSelectElement;
 const builderFont = document.getElementById('builder-font') as HTMLSelectElement;
@@ -124,7 +126,15 @@ function initCustomSelects() {
 
 function setupEventListeners() {
     sendBtn.addEventListener('click', handleSend);
-    promptBuilderBtn.addEventListener('click', () => promptBuilderPanel.classList.toggle('hidden'));
+    promptBuilderBtn.addEventListener('click', () => {
+        const isHidden = promptBuilderPanel.classList.toggle('hidden');
+        modalBackdrop.classList.toggle('hidden', isHidden);
+    });
+
+    modalBackdrop.addEventListener('click', () => {
+        promptBuilderPanel.classList.add('hidden');
+        modalBackdrop.classList.add('hidden');
+    });
 
     // Back Button
     document.getElementById('back-btn')?.addEventListener('click', () => {
@@ -141,12 +151,22 @@ function setupEventListeners() {
     document.getElementById('add-to-prompt-btn')?.addEventListener('click', () => {
         const context = constructBuilderContext();
         const existing = promptInput.value.trim();
-        if (existing) {
-            promptInput.value = `${context}\n\nAdditional Instructions: ${existing}`;
-        } else {
-            promptInput.value = context;
-        }
+        const newValue = existing
+            ? `${context}\n\nAdditional Instructions: ${existing}`
+            : context;
+
+        promptInput.value = newValue;
+
+        // Log the final prompt that will be sent to the terminal
+        const finalPrompt = constructPrompt(newValue);
+        fetch('/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: `FINAL PROMPT PREVIEW:\n${finalPrompt}` })
+        });
+
         promptBuilderPanel.classList.add('hidden');
+        modalBackdrop.classList.add('hidden');
         promptInput.focus();
         promptInput.scrollTop = promptInput.scrollHeight;
     });
@@ -213,6 +233,19 @@ function setupEventListeners() {
         });
     });
 
+    document.querySelectorAll('[data-anim]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const anim = (e.target as HTMLButtonElement).dataset.anim;
+            if (anim === 'fade') {
+                injectStyle(`@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } 
+                            section, div, h1, h2, p { animation: fadeIn 1s ease-out forwards; }`);
+            } else if (anim === 'slide') {
+                injectStyle(`@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                            section, div, h1, h2, p { animation: slideUp 0.8s ease-out forwards; }`);
+            }
+        });
+    });
+
     // Handle messages from iframe (Design Mode selection)
     window.addEventListener('message', (event) => {
         if (event.data.type === 'element-selected') {
@@ -259,9 +292,21 @@ async function handleSend() {
     const loadingId = addMessage('assistant', 'Processing request...');
 
     try {
+        const designSystemInstructions = `
+STRICT RULES:
+1. USE ONLY HTML AND TAILWIND CSS.
+2. NO EXTERNAL CSS OR INTERNAL <style> TAGS (except Google Font imports).
+3. NO GRADIENTS WHATSOEVER unless explicitly requested in the prompt. Use solid colors, subtle borders, and clean whitespace.
+4. USE TAILWIND PLAY CDN: <script src="https://cdn.tailwindcss.com"></script>
+5. ARCHITECTURE: Build a complete, responsive landing page.
+6. AESTHETICS: Modern, premium, minimalist. Use large font sizes for headings, optimal line heights, and generous padding/margin.
+7. INTERACTION: Add subtle Tailwind hover transitions to buttons and links while keeping the texts visible
+`;
+
+        const layoutType = builderLayoutType.value || 'landing-page';
         const systemPrompt = currentMode === 'edit'
-            ? `You are an expert editor. Modify the existing code according to user instructions. Return ONLY the complete updated HTML. Existing Code: \n${currentCode}`
-            : `You are an expert web designer. Output ONLY valid HTML with internal CSS. No talk. Just code. Use modern aesthetics, premium fonts, and subtle animations. Layout: ${builderLayout.value || 'modern'}. Navbar: ${builderNavbar.value || 'top'}.`;
+            ? `You are an expert editor. Modify the existing code according to user instructions.${designSystemInstructions} Return ONLY the complete updated HTML document. Existing Code: \n${currentCode}`
+            : `You are an expert web designer. ${designSystemInstructions} Page Type: {${layoutType}}. Layout Config: ${builderLayout.value || 'modern'}. Navbar: ${builderNavbar.value || 'top'}. Create a stunning, high-converting ${layoutType.replace('-', ' ')}. Return ONLY valid HTML.`;
 
         const response = await fetch('/api/generate', {
             method: 'POST',
@@ -273,7 +318,7 @@ async function handleSend() {
             })
         });
 
-        const result = await response.json();
+        const result = (await response.json()) as any;
         let code = result.choices?.[0]?.message?.content || "Error generating code.";
         code = code.replace(/```html/g, '').replace(/```/g, '').trim();
 
@@ -289,6 +334,7 @@ async function handleSend() {
 }
 
 function constructBuilderContext() {
+    const layoutType = builderLayoutType.value;
     const layout = builderLayout.value;
     const navbar = builderNavbar.value;
     const font = builderFont.value;
@@ -302,7 +348,8 @@ function constructBuilderContext() {
     const accentColor = builderAccentColor.value;
 
     let context = '';
-    if (layout) context += `Layout: ${layout}. `;
+    if (layoutType) context += `Page Type: {${layoutType}}. `;
+    if (layout) context += `Layout Config: ${layout}. `;
     if (navbar) context += `Navbar: ${navbar}. `;
     if (font) context += `Primary Font Style: ${font}. `;
     if (colorMode) context += `Color Mode: ${colorMode}. `;
@@ -326,7 +373,6 @@ function switchToSplitMode() {
     previewContainer.classList.remove('hidden');
     promptBuilderBtn.classList.add('hidden');
     promptBuilderPanel.classList.add('hidden');
-    document.getElementById('chat-mode-toggle')?.classList.remove('hidden');
 }
 
 function updatePreview(code: string) {
@@ -348,27 +394,21 @@ function updatePreview(code: string) {
 
             document.body.addEventListener('mouseover', (e) => {
                 if (!isDesignMode) return;
-                e.target.style.outline = '2px solid #6366f1';
-                e.target.style.outlineOffset = '2px';
+                const el = e.target;
+                el.style.transition = 'outline 0.1s ease';
+                el.style.outline = '2px solid #6366f1';
+                el.style.outlineOffset = '2px';
                 
-                // Show tag tooltip
                 let tooltip = document.getElementById('aura-tooltip');
                 if (!tooltip) {
                     tooltip = document.createElement('div');
                     tooltip.id = 'aura-tooltip';
-                    tooltip.style.position = 'fixed';
-                    tooltip.style.background = '#6366f1';
-                    tooltip.style.color = 'white';
-                    tooltip.style.padding = '2px 8px';
-                    tooltip.style.borderRadius = '4px';
-                    tooltip.style.fontSize = '12px';
-                    tooltip.style.zIndex = '9999';
-                    tooltip.style.pointerEvents = 'none';
+                    tooltip.style.cssText = 'position:fixed; background:#6366f1; color:white; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; font-family:sans-serif; z-index:99999; pointer-events:none; box-shadow:0 4px 12px rgba(99,102,241,0.3);';
                     document.body.appendChild(tooltip);
                 }
-                tooltip.textContent = '<' + e.target.tagName.toLowerCase() + '>';
-                const rect = e.target.getBoundingClientRect();
-                tooltip.style.top = rect.top - 25 + 'px';
+                tooltip.textContent = '<' + el.tagName.toLowerCase() + '>';
+                const rect = el.getBoundingClientRect();
+                tooltip.style.top = Math.max(0, rect.top - 35) + 'px';
                 tooltip.style.left = rect.left + 'px';
                 tooltip.style.display = 'block';
             });
@@ -381,6 +421,7 @@ function updatePreview(code: string) {
 
             document.body.addEventListener('dblclick', (e) => {
                 if (!isDesignMode) return;
+                e.preventDefault();
                 const tag = e.target.tagName.toLowerCase();
                 window.parent.postMessage({ type: 'element-selected', tag: tag }, '*');
             });

@@ -8,13 +8,109 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Roboto:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <div id="app" class="entry-mode">
+        <div id="modal-backdrop" class="hidden"></div>
+        <div id="prompt-builder-panel" class="hidden">
+            <h3>Prompt Builder</h3>
+            <div class="builder-sections">
+                <div class="builder-section">
+                    <label>Layout Type</label>
+                    <select id="builder-layout-type">
+                        <option value="landing-page">Landing Page</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Layout Config</label>
+                    <select id="builder-layout">
+                        <option value="">Select Layout</option>
+                        <option value="left-text">Left Text, Right Image</option>
+                        <option value="right-text">Right Text, Left Image</option>
+                        <option value="center">Center Text & CTA</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Navbar</label>
+                    <select id="builder-navbar">
+                        <option value="top">Top Navbar</option>
+                        <option value="floating">Bottom Floating</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Font Style</label>
+                    <select id="builder-font">
+                        <option value="modern-sans">Modern Sans</option>
+                        <option value="elegant-serif">Elegant Serif</option>
+                        <option value="minimalist">Minimalist</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Animation Type</label>
+                    <select id="builder-anim-type">
+                        <option value="fade">Fade In</option>
+                        <option value="slide">Slide Up</option>
+                        <option value="reveal">Reveal</option>
+                    </select>
+                </div>
+                <div class="builder-section full-width">
+                    <label>Animation Duration & Delay (Premium)</label>
+                    <div class="slider-group">
+                        <input type="range" id="builder-anim-duration" min="0.3" max="1.5" step="0.1" value="0.6">
+                        <input type="range" id="builder-anim-delay" min="0" max="1" step="0.1" value="0.2">
+                    </div>
+                </div>
+                <div class="builder-section">
+                    <label>Animation Scene</label>
+                    <select id="builder-anim-scene">
+                        <option value="all-at-once">All at once</option>
+                        <option value="staggered">Staggered</option>
+                        <option value="word-by-word">Word by Word</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Animation Direction</label>
+                    <select id="builder-anim-direction">
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Animation Timing</label>
+                    <select id="builder-anim-timing">
+                        <option value="ease-out">Ease Out</option>
+                        <option value="spring">Spring</option>
+                        <option value="bounce">Bounce</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Color Mode</label>
+                    <select id="builder-color-mode">
+                        <option value="dark">Dark Mode</option>
+                        <option value="light">Light Mode</option>
+                    </select>
+                </div>
+                <div class="builder-section">
+                    <label>Accent Color</label>
+                    <select id="builder-accent-color">
+                        <option value="indigo">Indigo</option>
+                        <option value="emerald">Emerald</option>
+                        <option value="rose">Rose</option>
+                        <option value="amber">Amber</option>
+                        <option value="sky">Sky</option>
+                    </select>
+                </div>
+            </div>
+            <div class="builder-footer">
+                <button id="add-to-prompt-btn" class="secondary-btn">Add to Prompt</button>
+            </div>
+        </div>
         <!-- Top Bar (Hidden initially) -->
         <header id="top-bar" class="hidden">
             <div class="top-bar-left">
@@ -23,8 +119,6 @@
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
                 </button>
-            </div>
-            <div class="top-bar-center">
                 <div class="view-switchers">
                     <button class="switcher-btn active" data-view="desktop">Desktop</button>
                     <button class="switcher-btn" data-view="mobile">Mobile</button>
@@ -35,7 +129,7 @@
                     <button class="switcher-btn" data-view="code">Code</button>
                 </div>
             </div>
-            <div class="top-bar-right">
+            <div class="top-bar-center">
                 <div class="design-tools">
                     <div class="dropdown">
                         <button class="tool-btn">Fonts</button>
@@ -60,6 +154,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="top-bar-right">
                 <button id="export-btn" class="primary-btn">Export</button>
             </div>
         </header>
@@ -74,97 +170,6 @@
                 <div id="chat-messages" class="hidden"></div>
 
                 <div id="chat-input-wrapper">
-                    <div id="prompt-builder-panel" class="hidden">
-                        <h3>Prompt Builder</h3>
-                        <div class="builder-sections">
-                            <div class="builder-section">
-                                <label>Layout</label>
-                                <select id="builder-layout">
-                                    <option value="">Select Layout</option>
-                                    <option value="left-text">Left Text, Right Image</option>
-                                    <option value="right-text">Right Text, Left Image</option>
-                                    <option value="center">Center Text & CTA</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Navbar</label>
-                                <select id="builder-navbar">
-                                    <option value="top">Top Navbar</option>
-                                    <option value="floating">Bottom Floating</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Font Style</label>
-                                <select id="builder-font">
-                                    <option value="modern-sans">Modern Sans</option>
-                                    <option value="elegant-serif">Elegant Serif</option>
-                                    <option value="minimalist">Minimalist</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Animation Type</label>
-                                <select id="builder-anim-type">
-                                    <option value="fade">Fade In</option>
-                                    <option value="slide">Slide Up</option>
-                                    <option value="reveal">Reveal</option>
-                                </select>
-                            </div>
-                            <div class="builder-section full-width">
-                                <label>Animation Duration & Delay (Premium)</label>
-                                <div class="slider-group">
-                                    <input type="range" id="builder-anim-duration" min="0.3" max="1.5" step="0.1"
-                                        value="0.6">
-                                    <input type="range" id="builder-anim-delay" min="0" max="1" step="0.1" value="0.2">
-                                </div>
-                            </div>
-                            <div class="builder-section">
-                                <label>Animation Scene</label>
-                                <select id="builder-anim-scene">
-                                    <option value="all-at-once">All at once</option>
-                                    <option value="staggered">Staggered</option>
-                                    <option value="word-by-word">Word by Word</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Animation Direction</label>
-                                <select id="builder-anim-direction">
-                                    <option value="up">Up</option>
-                                    <option value="down">Down</option>
-                                    <option value="left">Left</option>
-                                    <option value="right">Right</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Animation Timing</label>
-                                <select id="builder-anim-timing">
-                                    <option value="ease-out">Ease Out</option>
-                                    <option value="spring">Spring</option>
-                                    <option value="bounce">Bounce</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Color Mode</label>
-                                <select id="builder-color-mode">
-                                    <option value="dark">Dark Mode</option>
-                                    <option value="light">Light Mode</option>
-                                </select>
-                            </div>
-                            <div class="builder-section">
-                                <label>Accent Color</label>
-                                <select id="builder-accent-color">
-                                    <option value="indigo">Indigo</option>
-                                    <option value="emerald">Emerald</option>
-                                    <option value="rose">Rose</option>
-                                    <option value="amber">Amber</option>
-                                    <option value="sky">Sky</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="builder-footer">
-                            <button id="add-to-prompt-btn" class="secondary-btn">Add to Prompt</button>
-                        </div>
-                    </div>
-
                     <div class="input-area">
                         <textarea id="prompt-input"
                             placeholder="Describe the landing page you want to build..."></textarea>
