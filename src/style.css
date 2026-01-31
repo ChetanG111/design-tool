@@ -97,7 +97,8 @@ h3,
     background: rgba(10, 10, 10, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 100;
+    position: relative;
+    z-index: 5000;
 }
 
 .top-bar-left {
@@ -694,7 +695,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     overflow: hidden;
-    z-index: 1000;
+    z-index: 6000;
     display: none;
     flex-direction: column;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
@@ -855,7 +856,7 @@ select {
     background-color: #0f0f0f;
     min-width: 140px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    z-index: 200;
+    z-index: 5100;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     top: calc(100% + 8px);

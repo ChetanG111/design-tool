@@ -1,6 +1,6 @@
 import { serve, file as bunFile } from "bun";
 import { join } from "path";
-import { watch, readFileSync, existsSync, mkdirSync } from "fs";
+import { watch, readFileSync, existsSync, mkdirSync, readdirSync } from "fs";
 
 const SYSTEM_PROMPT = readFileSync("./prompts/system-prompt.txt", "utf-8");
 
@@ -125,10 +125,18 @@ const server = serve({
                     if (!existsSync(dir)) {
                         mkdirSync(dir, { recursive: true });
                     }
-                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                    const fileName = join(dir, `design-${timestamp}.html`);
-                    await Bun.write(fileName, content);
-                    console.log(`[SAVED] Generation saved to ${fileName}`);
+
+                    const files = readdirSync(dir).filter(f => f.startsWith('design-') && f.endsWith('.html'));
+                    const nextIndex = files.length + 1;
+                    const paddedIndex = nextIndex.toString().padStart(3, '0');
+
+                    const fileName = `design-${paddedIndex}.html`;
+                    const fullPath = join(dir, fileName);
+
+                    await Bun.write(fullPath, content);
+                    await Bun.write(join(dir, 'latest.html'), content);
+
+                    console.log(`[SAVED] Saved as ${fileName} and updated latest.html`);
                 } catch (e) {
                     console.error(`[ERROR] Failed to save generation:`, e);
                 }
