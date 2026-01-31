@@ -1,0 +1,47 @@
+<header id="top-bar" class="hidden">
+    <div class="top-bar-left">
+        <button id="back-btn" class="icon-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <div class="view-switchers">
+            <button class="switcher-btn active" data-view="desktop">Desktop</button>
+            <button class="switcher-btn" data-view="mobile">Mobile</button>
+        </div>
+        <div class="mode-switchers">
+            <button class="switcher-btn active" data-view="preview">Preview</button>
+            <button class="switcher-btn" data-view="design">Design</button>
+            <button class="switcher-btn" data-view="code">Code</button>
+        </div>
+    </div>
+    <div class="top-bar-center">
+        <div class="design-tools">
+            <div class="dropdown">
+                <button class="tool-btn">Fonts</button>
+                <div class="dropdown-content">
+                    <button data-font="inter">Inter</button>
+                    <button data-font="outfit">Outfit</button>
+                    <button data-font="roboto">Roboto</button>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="tool-btn">Animations</button>
+                <div class="dropdown-content">
+                    <button data-anim="fade">Fade</button>
+                    <button data-anim="slide">Slide</button>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="tool-btn">Colors</button>
+                <div class="dropdown-content">
+                    <button data-theme="dark">Dark</button>
+                    <button data-theme="light">Light</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="top-bar-right">
+        <button id="export-btn" class="primary-btn">Export</button>
+    </div>
+</header>
