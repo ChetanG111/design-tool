@@ -1,5 +1,4 @@
 import { builderSelections, currentMode, currentCode, setCurrentCode, setFirstPrompt, isFirstPrompt } from './state';
-import { DESIGN_SYSTEM_INSTRUCTIONS } from './constants';
 import { addMessage, removeMessage, updatePreview, switchToSplitMode } from './ui';
 import { promptInput, inlineModelSelect } from './elements';
 
@@ -21,6 +20,13 @@ export function constructBuilderContext() {
 
 export function constructPrompt(userPrompt: string) {
     if (currentMode === 'edit') return userPrompt;
+
+    // Avoid double injection: if userPrompt starts with 'Page Type:', 
+    // it was likely already added via the 'Add to Prompt' button.
+    if (userPrompt.startsWith('Page Type:')) {
+        return userPrompt;
+    }
+
     const builderContext = constructBuilderContext();
     return `${builderContext} ${userPrompt}`.trim();
 }
@@ -43,10 +49,7 @@ export async function handleSend() {
     const assistantMsgId = addMessage('assistant', 'Designing your landing page...');
 
     try {
-        const layoutType = builderSelections['layout-type'] || 'landing-page';
-        const systemPrompt = currentMode === 'edit'
-            ? `You are an expert editor. Modify the existing code according to user instructions.${DESIGN_SYSTEM_INSTRUCTIONS} Return ONLY the complete updated HTML document. Existing Code: \n${currentCode}`
-            : `You are an expert web designer. ${DESIGN_SYSTEM_INSTRUCTIONS} Page Type: {${layoutType}}. Layout Config: ${builderSelections['layout-config'] || 'card'}. Framing: ${builderSelections['framing'] || 'full-screen'}. Style: ${builderSelections['style'] || 'flat'}. Theme: ${builderSelections['theme'] || 'dark'}. Create a stunning, high-converting ${layoutType.replace('-', ' ')} for ${builderSelections['platform'] || 'web'}. Return ONLY valid HTML.`;
+        const layoutType = builderSelections['layout-type'];
 
         const response = await fetch('/api/generate', {
             method: 'POST',
@@ -54,7 +57,11 @@ export async function handleSend() {
             body: JSON.stringify({
                 model,
                 prompt: fullPrompt,
-                systemPrompt
+                systemPrompt: currentMode === 'edit'
+                    ? `You are an expert editor. Modify the existing code according to user instructions. Return ONLY the complete updated HTML document. Existing Code: \n${currentCode}`
+                    : '', // Let server inject the new system prompt for design mode
+                currentMode,
+                layoutType
             })
         });
 

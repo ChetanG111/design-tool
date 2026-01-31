@@ -86,13 +86,7 @@ export function setupEventListeners() {
 
         elements.promptInput.value = newValue;
 
-        // Log the final prompt
-        const finalPrompt = api.constructPrompt(newValue);
-        fetch('/api/log', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: `FINAL PROMPT PREVIEW:\n${finalPrompt}` })
-        });
+        elements.promptInput.value = newValue;
 
         elements.promptBuilderPanel.classList.add('hidden');
         elements.modalBackdrop.classList.add('hidden');

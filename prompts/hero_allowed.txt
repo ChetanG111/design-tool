@@ -1,0 +1,13 @@
+ALLOWED EXPRESSIVE TECHNIQUES (FINITE SET)
+
+HERO LAYOUTS:
+Text-level emphasis:
+• Background highlight behind text (never text color)
+• Underlines, strike-lines, or side rules
+• Very subtle rotation of emphasized text
+• Offset positioning of emphasized text relative to baseline
+
+Container-level emphasis:
+• Framed or inset hero container (e.g. content bounded within ~90% of viewport)
+• Subtle border or outline around hero region
+• Intentional negative space framing (canvas effect)

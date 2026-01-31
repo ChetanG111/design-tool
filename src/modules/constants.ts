@@ -1,14 +1,3 @@
-export const DESIGN_SYSTEM_INSTRUCTIONS = `
-STRICT RULES:
-1. USE ONLY HTML AND TAILWIND CSS.
-2. NO EXTERNAL CSS OR INTERNAL <style> TAGS (except Google Font imports).
-3. NO GRADIENTS WHATSOEVER unless explicitly requested in the prompt. Use solid colors, subtle borders, and clean whitespace.
-4. USE TAILWIND PLAY CDN: <script src="https://cdn.tailwindcss.com"></script>
-5. ARCHITECTURE: Build a complete, responsive landing page.
-6. AESTHETICS: Modern, premium, minimalist. Use large font sizes for headings, optimal line heights, and generous padding/margin.
-7. INTERACTION: Add subtle Tailwind hover transitions to buttons and links while keeping the texts visible
-`;
-
 export const DESIGN_MODE_SCRIPT = `
     <script>
         let isDesignMode = false;
